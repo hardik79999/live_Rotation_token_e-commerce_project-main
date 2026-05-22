@@ -1,5 +1,6 @@
 import { cn } from '@/utils/cn';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 import type { InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -9,8 +10,12 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hint?: string;
 }
 
-export function Input({ label, error, icon, hint, className, id, ...props }: InputProps) {
+export function Input({ label, error, icon, hint, className, id, type, ...props }: InputProps) {
+  const [showPassword, setShowPassword] = useState(false);
   const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
+
+  const isPassword = type === 'password';
+  const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -33,6 +38,7 @@ export function Input({ label, error, icon, hint, className, id, ...props }: Inp
         )}
         <input
           id={inputId}
+          type={inputType}
           className={cn(
             'w-full rounded-xl border px-3 py-2.5 text-sm transition-all duration-200',
             // Light
@@ -50,12 +56,26 @@ export function Input({ label, error, icon, hint, className, id, ...props }: Inp
             'dark:disabled:bg-slate-900 dark:disabled:text-slate-500',
             // Icon padding
             icon && 'pl-10',
-            // Error icon padding
-            error && 'pr-10',
+            // Padding for right side icons (eye and error)
+            (error && isPassword) ? 'pr-16' : (error || isPassword) ? 'pr-10' : 'pr-3',
             className
           )}
           {...props}
         />
+        {/* Eye/EyeOff toggle on the right */}
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className={cn(
+              "absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 focus:outline-none transition-colors",
+              error ? "right-9" : "right-3"
+            )}
+            tabIndex={-1}
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        )}
         {/* Error icon on the right */}
         {error && (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-red-400 pointer-events-none">

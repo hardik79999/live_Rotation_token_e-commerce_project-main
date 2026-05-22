@@ -39,6 +39,12 @@ def create_app(config_class=Config):
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
+
+    # Suppress console clutter from optional/caching services on startup
+    logging.getLogger('shop.search.client').setLevel(logging.ERROR)
+    logging.getLogger('shop.currency.rates').setLevel(logging.WARNING)
+    logging.getLogger('shop.utils.scheduler').setLevel(logging.WARNING)
+
     app.logger.info('E-Commerce API Startup 🚀')
 
     # ── Extensions ───────────────────────────────────────────────────────

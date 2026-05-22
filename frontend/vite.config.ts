@@ -6,7 +6,7 @@ import path from 'path'
 
 export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const backendUrl = env.VITE_API_URL ?? env.VITE_API_BASE_URL ?? 'http://localhost:7899'
+  const backendUrl = env.VITE_API_URL || env.VITE_API_BASE_URL || 'http://localhost:7899'
 
   return defineConfig({
     plugins: [

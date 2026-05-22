@@ -1,7 +1,7 @@
 // In production (.env.production), VITE_API_URL or VITE_API_BASE_URL may be '' (empty string).
 // ?? falls back only on null/undefined — NOT on empty string.
 // This means production uses relative paths, dev uses the Flask backend origin.
-const BASE = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL ?? '';
+const BASE = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '';
 
 /**
  * Convert a relative image path from the backend (/static/uploads/...)

@@ -14,7 +14,7 @@ interface Props {
 
 // Flask backend URL — same logic as useChat.ts
 const FLASK_ORIGIN = (() => {
-  const env = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL;
+  const env = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
   if (env) return String(env);
   // In dev, Vite proxies /api/* to Flask, so we can use relative URL
   return '';

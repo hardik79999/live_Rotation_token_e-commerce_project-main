@@ -24,7 +24,7 @@ import { io, Socket } from 'socket.io-client';
 // Socket.IO does NOT go through the Vite dev proxy, so we must
 // point it directly at the Flask backend origin.
 const FLASK_ORIGIN = (() => {
-  const env = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL;
+  const env = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL;
   if (env) return String(env);
   const url = new URL(window.location.href);
   url.port = '7899';

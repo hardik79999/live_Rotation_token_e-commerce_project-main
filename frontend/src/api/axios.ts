@@ -1,4 +1,4 @@
-﻿import axios, {
+import axios, {
   type InternalAxiosRequestConfig,
   type AxiosResponse,
   type AxiosError,
@@ -6,7 +6,7 @@
 import toast from "react-hot-toast";
 import { AUTH } from "./routes";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? import.meta.env.VITE_API_BASE_URL ?? "";
+const BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "";
 const MUTATING_METHODS = new Set(["POST", "PUT", "DELETE", "PATCH"]);
 
 // Auth endpoints that never need a refresh attempt

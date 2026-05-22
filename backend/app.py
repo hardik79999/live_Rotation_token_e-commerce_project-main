@@ -48,4 +48,13 @@ if __name__ == '__main__':
         port = int(port)
 
     debug = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+
+    if os.environ.get('WERKZEUG_RUN_MAIN') == 'true' or not debug:
+        display_host = 'localhost' if host == '0.0.0.0' else host
+        print("\n" + "═"*60)
+        print(" 🚀  ShopHub Backend API Server is Ready!")
+        print(f" 🔗  API Endpoint:  http://{display_host}:{port}/api/test")
+        print(f" 📖  Swagger Docs:  http://{display_host}:{port}/apidocs/")
+        print("═"*60 + "\n")
+
     socketio.run(app, host=host, port=port, debug=debug)
