@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice {{ invoice_number }}</title>
+  <style>
+    /* ── Reset ─────────────────────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      color: #1f2937;
+      background: #ffffff;
+      padding: 32px 40px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────── */
+    .header {
+      display: table;
+      width: 100%;
+      margin-bottom: 24px;
+      border-bottom: 3px solid #f97316;
+      padding-bottom: 18px;
+    }
+    .header-left  { display: table-cell; vertical-align: top; width: 55%; }
+    .header-right { display: table-cell; vertical-align: top; text-align: right; }
+
+    .brand-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: #f97316;
+      letter-spacing: -0.5px;
+    }
+    .brand-tagline {
+      font-size: 10px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+    .company-info {
+      font-size: 10px;
+      color: #6b7280;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .invoice-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: 1px;
+    }
+    .invoice-meta {
+      font-size: 10px;
+      color: #6b7280;
+      margin-top: 6px;
+      line-height: 1.9;
+    }
+    .invoice-meta strong { color: #374151; }
+
+    /* ── Status badge ───────────────────────────────────────── */
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+    .status-delivered  { background: #dcfce7; color: #166534; }
+    .status-processing { background: #dbeafe; color: #1e40af; }
+    .status-shipped    { background: #ffedd5; color: #9a3412; }
+    .status-pending    { background: #fef9c3; color: #854d0e; }
+    .status-cancelled  { background: #fee2e2; color: #991b1b; }
+
+    /* ── Info grid ──────────────────────────────────────────── */
+    .info-grid {
+      display: table;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .info-cell {
+      display: table-cell;
+      width: 50%;
+      vertical-align: top;
+      padding: 14px 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .info-cell:first-child {
+      border-right: none;
+      border-radius: 8px 0 0 8px;
+    }
+    .info-cell:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+    .info-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+    .info-value {
+      font-size: 11px;
+      color: #111827;
+      line-height: 1.7;
+    }
+    .info-value strong { font-weight: 700; }
+
+    /* ── Items table ────────────────────────────────────────── */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 0;
+    }
+    .items-table thead tr {
+      background: #111827;
+      color: #ffffff;
+    }
+    .items-table thead th {
+      padding: 10px 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+    .items-table thead th.right  { text-align: right; }
+    .items-table thead th.center { text-align: center; }
+
+    .items-table tbody tr:nth-child(even) { background: #f9fafb; }
+    .items-table tbody tr:nth-child(odd)  { background: #ffffff; }
+
+    .items-table tbody td {
+      padding: 10px 12px;
+      font-size: 11px;
+      color: #374151;
+      border-bottom: 1px solid #e5e7eb;
+      vertical-align: middle;
+    }
+    .items-table tbody td.right  { text-align: right;  font-weight: 600; }
+    .items-table tbody td.center { text-align: center; }
+
+    /* ── Totals ─────────────────────────────────────────────── */
+    .totals-wrapper {
+      display: table;
+      width: 100%;
+      margin-top: 0;
+    }
+    .totals-spacer { display: table-cell; width: 52%; }
+    .totals-box    { display: table-cell; width: 48%; vertical-align: top; }
+
+    .totals-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .totals-table tr td {
+      padding: 9px 14px;
+      font-size: 11px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .totals-table tr td.right { text-align: right; }
+    .totals-table tr:last-child td { border-bottom: none; }
+    .totals-table .label { color: #6b7280; }
+
+    .totals-table .subtotal-row td { background: #f9fafb; }
+    .totals-table .tax-row td      { background: #fff7ed; color: #9a3412; }
+    .totals-table .ship-row td     { background: #f0fdf4; color: #166534; }
+
+    .totals-table .grand-total td {
+      background: #f97316;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 12px 14px;
+    }
+
+    /* ── Payment info ───────────────────────────────────────── */
+    .payment-row {
+      display: table;
+      width: 100%;
+      margin-top: 20px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+      padding: 12px 16px;
+    }
+    .payment-row-left  { display: table-cell; vertical-align: middle; }
+    .payment-row-right { display: table-cell; vertical-align: middle; text-align: right; }
+    .payment-label { font-size: 10px; color: #6b7280; margin-bottom: 2px; }
+    .payment-value { font-size: 12px; font-weight: 700; color: #166534; }
+
+    /* ── Thank you banner ───────────────────────────────────── */
+    .thank-you {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+      padding: 14px 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .thank-you p {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ea580c;
+      margin-bottom: 4px;
+    }
+    .thank-you small { font-size: 10px; color: #9a3412; }
+
+    /* ── Footer ─────────────────────────────────────────────── */
+    .footer {
+      margin-top: 28px;
+      padding-top: 14px;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      font-size: 9px;
+      color: #9ca3af;
+      line-height: 1.9;
+    }
+    .footer strong { color: #6b7280; }
+
+    /* ── GST note ───────────────────────────────────────────── */
+    .gst-note {
+      font-size: 9px;
+      color: #9ca3af;
+      margin-top: 6px;
+      text-align: right;
+      padding-right: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <div class="header">
+    <div class="header-left">
+      <div class="brand-name">ShopHub</div>
+      <div class="brand-tagline">India's Fastest Growing Marketplace</div>
+      <div class="company-info">
+        {{ company_name }}<br />
+        GSTIN: {{ gstin }}<br />
+        {{ support_email }}
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="invoice-title">INVOICE</div>
+      <div class="invoice-meta">
+        <strong>Invoice No:</strong> {{ invoice_number }}<br />
+        <strong>Date:</strong> {{ invoice_date }}<br />
+        <strong>Order ID:</strong> #{{ order_uuid[:8]|upper }}
+      </div>
+      <div>
+        {% set s = order_status|lower %}
+        <span class="status-badge status-{{ s }}">{{ order_status }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Bill To / Ship To ── -->
+  <div class="info-grid">
+    <div class="info-cell">
+      <div class="info-label">Bill To</div>
+      <div class="info-value">
+        <strong>{{ customer_name }}</strong><br />
+        {{ customer_email }}<br />
+        {% if customer_phone and customer_phone != 'N/A' %}Ph: {{ customer_phone }}{% endif %}
+      </div>
+    </div>
+    <div class="info-cell">
+      <div class="info-label">Ship To</div>
+      <div class="info-value">{{ shipping_address }}</div>
+    </div>
+  </div>
+
+  <!-- ── Items Table ── -->
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width:5%;">#</th>
+        <th style="width:50%;">Product</th>
+        <th class="center" style="width:10%;">Qty</th>
+        <th class="right"  style="width:17%;">Unit Price</th>
+        <th class="right"  style="width:18%;">Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ item.name }}</td>
+        <td class="center">{{ item.qty }}</td>
+        <td class="right">Rs. {{ "{:,.0f}".format(item.price) }}</td>
+        <td class="right">Rs. {{ "{:,.0f}".format(item.subtotal) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- ── Totals ── -->
+  <div class="totals-wrapper">
+    <div class="totals-spacer"></div>
+    <div class="totals-box">
+      <table class="totals-table">
+        <tr class="subtotal-row">
+          <td class="label">Subtotal (excl. GST)</td>
+          <td class="right">Rs. {{ "{:,.2f}".format(base_amount) }}</td>
+        </tr>
+        <tr class="tax-row">
+          <td class="label">GST (18%)</td>
+          <td class="right">Rs. {{ "{:,.2f}".format(tax_amount) }}</td>
+        </tr>
+        <tr class="ship-row">
+          <td class="label">Shipping</td>
+          <td class="right">{% if shipping_fee == 0 %}FREE{% else %}Rs. {{ "{:,.0f}".format(shipping_fee) }}{% endif %}</td>
+        </tr>
+        <tr class="grand-total">
+          <td>Grand Total</td>
+          <td class="right">Rs. {{ "{:,.0f}".format(grand_total) }}</td>
+        </tr>
+      </table>
+      <div class="gst-note">* Prices are inclusive of 18% GST</div>
+    </div>
+  </div>
+
+  <!-- ── Payment Details ── -->
+  <div class="payment-row">
+    <div class="payment-row-left">
+      <div class="payment-label">Payment Method</div>
+      <div class="payment-value">{{ payment_method }}</div>
+    </div>
+    <div class="payment-row-right">
+      <div class="payment-label">Transaction ID</div>
+      <div class="payment-value" style="font-size:10px; font-family:monospace;">
+        {{ transaction_id }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Thank You ── -->
+  <div class="thank-you">
+    <p>Thank you for shopping with ShopHub!</p>
+    <small>
+      This is a computer-generated invoice and does not require a physical signature.
+    </small>
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="footer">
+    <strong>{{ company_name }}</strong> &nbsp;&middot;&nbsp; GSTIN: {{ gstin }}
+    &nbsp;&middot;&nbsp; {{ support_email }}<br />
+    For queries, visit <strong>shophub.in/support</strong> or reply to this email.
+    &nbsp;&middot;&nbsp; &copy; {{ invoice_date[-4:] }} ShopHub. All rights reserved.
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+{% extends "email/base.html" %}
+
+{#
+  order_status_update.html
+  ────────────────────────
+  Sent to the CUSTOMER whenever an order status changes.
+
+  Context:
+    customer_name   str
+    order_uuid      str
+    new_status      str   — lowercase: pending/processing/shipped/delivered/cancelled
+    headline        str   — e.g. "🚚 Your Order is On the Way!"
+    description     str   — one-line description of the status
+    icon            str   — emoji icon
+    show_timeline   bool  — False for cancelled orders
+    timeline_steps  list  — [{label, is_done, is_current}]
+    frontend_url    str
+#}
+
+{% set status_colors = {
+  'pending':    ('#fef3c7', '#92400e'),
+  'processing': ('#dbeafe', '#1e40af'),
+  'shipped':    ('#fed7aa', '#9a3412'),
+  'delivered':  ('#d1fae5', '#065f46'),
+  'cancelled':  ('#fee2e2', '#991b1b'),
+} %}
+
+{% set bg_color, fg_color = status_colors.get(new_status, ('#f3f4f6', '#374151')) %}
+
+{% block body %}
+
+{# ── Icon + headline ── #}
+<div style="text-align:center;margin-bottom:24px;">
+  <div style="font-size:52px;margin-bottom:12px;">{{ icon }}</div>
+  <h1 class="email-h1"
+      style="margin:0 0 8px;color:#111827;font-size:22px;font-weight:800;line-height:1.3;">
+    {{ headline }}
+  </h1>
+  <p style="margin:0;color:#6b7280;font-size:15px;line-height:1.6;">
+    Hi <strong style="color:#111827;">{{ customer_name }}</strong>, {{ description }}
+  </p>
+</div>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 24px;" />
+
+{# ── Order ID + status badge ── #}
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+       style="background:#f9fafb;border-radius:12px;padding:16px 20px;margin-bottom:24px;">
+  <tr>
+    <td style="vertical-align:middle;">
+      <p style="margin:0;color:#9ca3af;font-size:11px;text-transform:uppercase;
+                letter-spacing:1px;font-weight:600;">Order ID</p>
+      <p style="margin:4px 0 0;color:#111827;font-size:16px;font-weight:700;
+                font-family:'Courier New',monospace;">
+        #{{ order_uuid[:8] | upper }}
+      </p>
+    </td>
+    <td style="text-align:right;vertical-align:middle;">
+      <span style="background:{{ bg_color }};color:{{ fg_color }};
+                   padding:5px 16px;border-radius:999px;
+                   font-size:13px;font-weight:700;text-transform:capitalize;">
+        {{ new_status }}
+      </span>
+    </td>
+  </tr>
+</table>
+
+{# ── Progress timeline (hidden for cancelled) ── #}
+{% if show_timeline and timeline_steps %}
+<table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+       style="margin:0 0 24px;">
+  <tr>
+    {% for step in timeline_steps %}
+    {# Step dot + label #}
+    <td style="text-align:center;vertical-align:top;padding:0 4px;">
+      <div style="width:28px;height:28px;border-radius:50%;
+                  background:{% if step.is_done %}#f97316{% else %}#e5e7eb{% endif %};
+                  border:3px solid {% if step.is_current %}#f97316{% else %}transparent{% endif %};
+                  margin:0 auto 6px;line-height:22px;text-align:center;">
+        {% if step.is_done and not step.is_current %}
+          <span style="color:#fff;font-size:13px;font-weight:700;">✓</span>
+        {% endif %}
+      </div>
+      <p style="margin:0;font-size:11px;
+                color:{% if step.is_current %}#f97316{% elif step.is_done %}#374151{% else %}#9ca3af{% endif %};
+                font-weight:{% if step.is_current %}700{% elif step.is_done %}600{% else %}400{% endif %};
+                text-transform:capitalize;">
+        {{ step.label }}
+      </p>
+    </td>
+    {# Connector line between steps #}
+    {% if not loop.last %}
+    <td style="vertical-align:top;padding-top:13px;">
+      <div style="height:2px;
+                  background:{% if step.is_done %}#f97316{% else %}#e5e7eb{% endif %};">
+      </div>
+    </td>
+    {% endif %}
+    {% endfor %}
+  </tr>
+</table>
+{% endif %}
+
+{# ── CTA ── #}
+<div style="text-align:center;margin:0 0 8px;">
+  <a href="{{ frontend_url }}/user/orders"
+     class="btn-cta"
+     style="background:#f97316;color:#ffffff;padding:14px 36px;
+            text-decoration:none;border-radius:10px;font-weight:700;
+            font-size:15px;display:inline-block;letter-spacing:0.3px;">
+    View Order Details →
+  </a>
+</div>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:28px 0 20px;" />
+
+<p style="margin:0;color:#9ca3af;font-size:13px;text-align:center;line-height:1.6;">
+  Questions?
+  <a href="mailto:{{ support_email | default('support@shophub.in') }}"
+     style="color:#f97316;text-decoration:none;font-weight:600;">
+    Contact Support
+  </a>
+</p>
+
+{% endblock %}

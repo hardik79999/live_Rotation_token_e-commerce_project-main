@@ -1,0 +1,63 @@
+# ========================
+# 1. Environment Variables
+# ========================
+.env
+.env*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================
+# 2. Dependencies & Build
+# ========================
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ========================
+# 3. Virtual Environment
+# ========================
+.venv/
+venv/
+env/
+.venvz/
+
+# ========================
+# 4. Python Cache Files
+# ========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ========================
+# 5. Logs and Temp Files
+# ========================
+logs/
+*.log
+*.pid
+error.txt
+.kiro/
+
+# ========================
+# 6. Uploaded Files (Images)
+# ========================
+shop/static/uploads/products/*
+shop/static/uploads/profiles/*
+!shop/static/uploads/products/.gitkeep
+!shop/static/uploads/profiles/.gitkeep
+
+# ========================
+# 7. IDE & OS Files
+# ========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

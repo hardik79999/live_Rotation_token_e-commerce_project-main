@@ -1,0 +1,75 @@
+{% extends "email/base.html" %}
+
+{#
+  seller_status_changed.html
+  ──────────────────────────
+  Sent to the SELLER when an admin activates or blocks their account.
+
+  Context:
+    seller_name  str
+    is_active    bool  — True = activated, False = blocked
+    frontend_url str
+#}
+
+{% block body %}
+
+{% if is_active %}
+  {% set icon = '🎉' %}
+  {% set headline = 'Your Seller Account is Active!' %}
+  {% set message %}
+    Your ShopHub seller account has been <strong style="color:#059669;">activated</strong>.
+    You can now log in, list products, and start selling to thousands of customers.
+  {% endset %}
+  {% set show_cta = true %}
+{% else %}
+  {% set icon = '⛔' %}
+  {% set headline = 'Your Seller Account Has Been Suspended' %}
+  {% set message %}
+    Your ShopHub seller account has been <strong style="color:#dc2626;">suspended</strong>
+    by our admin team. Your product listings are currently hidden from the storefront.
+    If you believe this is a mistake, please contact our support team immediately.
+  {% endset %}
+  {% set show_cta = false %}
+{% endif %}
+
+<div style="text-align:center;margin-bottom:28px;">
+  <div style="font-size:52px;margin-bottom:12px;">{{ icon }}</div>
+  <h1 class="email-h1"
+      style="margin:0 0 8px;color:#111827;font-size:22px;font-weight:800;">
+    {{ headline }}
+  </h1>
+  <p style="margin:0;color:#6b7280;font-size:15px;line-height:1.6;">
+    Hi <strong style="color:#111827;">{{ seller_name }}</strong>,
+  </p>
+</div>
+
+<div style="background:{% if is_active %}#d1fae5{% else %}#fee2e2{% endif %};
+            border-radius:12px;padding:20px 24px;margin-bottom:28px;">
+  <p style="margin:0;color:#374151;font-size:15px;line-height:1.7;">
+    {{ message }}
+  </p>
+</div>
+
+{% if show_cta %}
+<div style="text-align:center;margin:0 0 8px;">
+  <a href="{{ frontend_url }}/seller/dashboard"
+     class="btn-cta"
+     style="background:#f97316;color:#ffffff;padding:14px 36px;
+            text-decoration:none;border-radius:10px;font-weight:700;
+            font-size:15px;display:inline-block;letter-spacing:0.3px;">
+    Go to My Dashboard →
+  </a>
+</div>
+{% endif %}
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:28px 0 20px;" />
+
+<p style="margin:0;color:#9ca3af;font-size:13px;text-align:center;line-height:1.6;">
+  Questions?
+  <a href="mailto:{{ support_email | default('support@shophub.in') }}"
+     style="color:#f97316;text-decoration:none;font-weight:600;">
+    Contact Support
+  </a>
+</p>
+
+{% endblock %}

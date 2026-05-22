@@ -1,0 +1,58 @@
+{% extends "email/base.html" %}
+
+{#
+  welcome.html
+  ────────────
+  Sent to new users (customer OR seller) after registration.
+  Contains the email-verification link.
+
+  Context:
+    username          str
+    role              str  — "customer" or "seller"
+    verification_link str
+#}
+
+{% block body %}
+
+<div style="text-align:center;margin-bottom:28px;">
+  <div style="font-size:52px;margin-bottom:12px;">🎉</div>
+  <h1 class="email-h1"
+      style="margin:0 0 8px;color:#111827;font-size:24px;font-weight:800;">
+    Welcome to ShopHub, {{ username }}!
+  </h1>
+  <p style="margin:0;color:#6b7280;font-size:15px;line-height:1.6;">
+    {% if role == 'seller' %}
+      Your seller account is ready. Start listing products and growing your business.
+    {% else %}
+      Discover thousands of products from verified sellers across India.
+    {% endif %}
+  </p>
+</div>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 28px;" />
+
+<p style="margin:0 0 8px;color:#374151;font-size:15px;font-weight:600;text-align:center;">
+  One last step — verify your email address
+</p>
+<p style="margin:0 0 24px;color:#6b7280;font-size:14px;text-align:center;line-height:1.6;">
+  Click the button below to activate your account.
+  This link expires in <strong>10 minutes</strong>.
+</p>
+
+<div style="text-align:center;margin:0 0 28px;">
+  <a href="{{ verification_link }}"
+     class="btn-cta"
+     style="background:#f97316;color:#ffffff;padding:14px 36px;
+            text-decoration:none;border-radius:10px;font-weight:700;
+            font-size:15px;display:inline-block;letter-spacing:0.3px;">
+    ✅ Verify My Email
+  </a>
+</div>
+
+<hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 20px;" />
+
+<p style="margin:0;color:#9ca3af;font-size:13px;text-align:center;line-height:1.6;">
+  If you didn't create a ShopHub account, you can safely ignore this email.
+</p>
+
+{% endblock %}

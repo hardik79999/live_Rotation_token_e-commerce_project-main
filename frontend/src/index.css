@@ -1,0 +1,247 @@
+@import "tailwindcss";
+
+/* ── Tailwind v4: enable class-based dark mode ─────────────── */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Design tokens ─────────────────────────────────────────── */
+@theme {
+  /* Brand */
+  --color-brand-500: #f97316;   /* orange-500 */
+  --color-brand-600: #ea580c;   /* orange-600 */
+  --color-brand-400: #fb923c;   /* orange-400 — brighter on dark bg */
+
+  /* Surface tokens — light */
+  --color-surface:        #f9fafb;   /* gray-50  */
+  --color-surface-card:   #ffffff;
+  --color-surface-raised: #ffffff;
+
+  /* Text tokens — light */
+  --color-text-primary:   #111827;   /* gray-900 */
+  --color-text-secondary: #6b7280;   /* gray-500 */
+  --color-text-muted:     #9ca3af;   /* gray-400 */
+
+  /* Border tokens — light */
+  --color-border:         #e5e7eb;   /* gray-200 */
+  --color-border-subtle:  #f3f4f6;   /* gray-100 */
+}
+
+@layer base {
+  /* ── Smooth theme transition on every element ─────────────── */
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 300ms;
+    transition-timing-function: ease-in-out;
+    box-sizing: border-box;
+  }
+
+  /* ── Hide native number input spinners everywhere ─────────── */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  /* Disable transition on page load to prevent flash */
+  .no-transition * {
+    transition: none !important;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* ── Light mode base ──────────────────────────────────────── */
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── Dark mode base ───────────────────────────────────────── */
+  .dark body {
+    @apply bg-slate-900 text-slate-100;
+  }
+
+  a {
+    @apply no-underline;
+  }
+
+  /* ── Global branded scrollbar ─────────────────────────────── */
+  /* Webkit (Chrome, Edge, Safari) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1e293b;          /* slate-800 — dark track */
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #f97316;          /* orange-500 — brand colour */
+    border-radius: 999px;
+    border: 2px solid #1e293b;    /* gap between thumb and track */
+    transition: background 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ea580c;          /* orange-600 on hover */
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: #1e293b;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #f97316 #1e293b;   /* thumb track */
+  }
+
+  /* Light mode overrides — lighter track so it doesn't look odd */
+  html:not(.dark) ::-webkit-scrollbar-track {
+    background: #f1f5f9;          /* slate-100 */
+    border-radius: 999px;
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border: 2px solid #f1f5f9;
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-thumb:hover {
+    background: #ea580c;
+  }
+
+  html:not(.dark) ::-webkit-scrollbar-corner {
+    background: #f1f5f9;
+  }
+
+  html:not(.dark) * {
+    scrollbar-color: #f97316 #f1f5f9;
+  }
+}
+
+@layer utilities {
+  /* ── Scrollbar hide ───────────────────────────────────────── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ── iOS safe-area insets ─────────────────────────────────── */
+  /* pb-safe: padding-bottom = safe-area-inset-bottom (iPhone home bar) */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* pt-safe: padding-top = safe-area-inset-top (iPhone notch) */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* ── Bottom nav body offset (mobile only) ─────────────────── */
+  /* Prevents content from hiding behind the fixed bottom nav */
+  @media (max-width: 639px) {
+    .has-bottom-nav {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
+  /* ── Line clamp ───────────────────────────────────────────── */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-clamp: 3;
+  }
+
+  /* ── Overflow guard ───────────────────────────────────────── */
+  .no-overflow-x {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+}
+
+/* ── react-hot-toast: dark mode overrides ──────────────────────
+   react-hot-toast v2 renders each toast as:
+     <div data-hot-toast> (the outer wrapper)
+       <div> (the visible toast bubble — this is what we style)
+   
+   The inline styles from App.tsx toastOptions take precedence in
+   light mode. These CSS rules kick in when .dark is on <html>,
+   overriding the inline styles via !important.
+   ─────────────────────────────────────────────────────────────── */
+
+/* Base dark surface — targets the inner bubble div */
+.dark [data-hot-toast] > div:first-child {
+  background: #1e293b !important;   /* slate-800 */
+  color: #f1f5f9 !important;        /* slate-100 */
+  border-color: #334155 !important; /* slate-700 */
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* Also target the direct child in case structure varies */
+.dark [data-hot-toast] > div {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+  border-color: #334155 !important;
+}
+
+/* Success toast — dark */
+.dark [data-hot-toast][data-type="success"] > div {
+  background: #052e16 !important;   /* green-950 */
+  color: #bbf7d0 !important;        /* green-200 */
+  border-color: #166534 !important; /* green-800 */
+  border-left: 4px solid #22c55e !important;
+}
+
+/* Error toast — dark */
+.dark [data-hot-toast][data-type="error"] > div {
+  background: #450a0a !important;   /* red-950 */
+  color: #fecaca !important;        /* red-200 */
+  border-color: #991b1b !important; /* red-800 */
+  border-left: 4px solid #ef4444 !important;
+}
+
+/* Loading toast — dark */
+.dark [data-hot-toast][data-type="loading"] > div {
+  background: #1e293b !important;
+  color: #cbd5e1 !important;
+  border-color: #334155 !important;
+  border-left: 4px solid #f97316 !important;
+}
+
+/* Custom (JSX) toasts — dark */
+.dark [data-hot-toast][data-type="custom"] > div {
+  background: #052e16 !important;
+  color: #bbf7d0 !important;
+  border-color: #166534 !important;
+  border-left: 4px solid #22c55e !important;
+}

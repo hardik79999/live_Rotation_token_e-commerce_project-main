@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>{{ email_title | default('ShopHub') }}</title>
+  <!--
+    ShopHub Master Email Template
+    ─────────────────────────────
+    • Fully responsive — tested on Gmail, Outlook, Apple Mail, Yahoo
+    • All critical styles are inlined; <style> block handles media queries
+      (Gmail strips <style> in some contexts, so layout never breaks)
+    • Inline SVG logo — zero external requests, works in all clients
+    • Brand: dark header (#1f2937), orange accent (#f97316), clean white body
+    • Font stack: -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif
+  -->
+  <style type="text/css">
+    /* ── Reset ── */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media only screen and (max-width: 620px) {
+      .email-wrapper  { padding: 16px 0 !important; }
+      .email-card     { border-radius: 0 !important; }
+      .email-header   { padding: 20px 24px !important; }
+      .email-body     { padding: 28px 24px !important; }
+      .email-footer   { padding: 16px 24px !important; }
+      .btn-cta        { padding: 13px 28px !important; font-size: 14px !important; }
+      .hide-mobile    { display: none !important; }
+      h1.email-h1     { font-size: 20px !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background-color:#f3f4f6;
+             font-family:-apple-system,'Segoe UI','Helvetica Neue',Arial,sans-serif;">
+
+  <!-- ── Outer wrapper ── -->
+  <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation"
+         style="background-color:#f3f4f6;padding:40px 16px;">
+    <tr>
+      <td align="center">
+
+        <!-- ── Email card ── -->
+        <table class="email-card" width="600" cellpadding="0" cellspacing="0" role="presentation"
+               style="background:#ffffff;border-radius:16px;overflow:hidden;
+                      box-shadow:0 4px 32px rgba(0,0,0,0.10);
+                      max-width:600px;width:100%;">
+
+          <!-- ════════════════════════════════════════
+               HEADER
+               ════════════════════════════════════════ -->
+          <tr>
+            <td class="email-header"
+                style="background:linear-gradient(135deg,#1f2937 0%,#111827 100%);
+                       padding:28px 40px;text-align:center;">
+
+              <!-- Logo row -->
+              <table cellpadding="0" cellspacing="0" role="presentation"
+                     style="margin:0 auto;">
+                <tr>
+                  <!-- Inline SVG — no external image, renders everywhere -->
+                  <td style="vertical-align:middle;padding-right:12px;">
+                    <svg width="44" height="44" viewBox="0 0 48 48" fill="none"
+                         xmlns="http://www.w3.org/2000/svg"
+                         style="display:block;border-radius:8px;">
+                      <circle cx="24" cy="24" r="24" fill="#1f2937"/>
+                      <path d="M14 20h20l-2 14H16L14 20z" fill="#f97316"/>
+                      <path d="M19 20v-3a5 5 0 0 1 10 0v3"
+                            stroke="#ffffff" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                      <circle cx="24" cy="30" r="1.5" fill="#ffffff"/>
+                      <circle cx="20" cy="30" r="1" fill="#ffffff" opacity="0.6"/>
+                      <circle cx="28" cy="30" r="1" fill="#ffffff" opacity="0.6"/>
+                    </svg>
+                  </td>
+                  <td style="vertical-align:middle;">
+                    <span style="font-size:28px;font-weight:800;color:#ffffff;
+                                 letter-spacing:-0.5px;line-height:1;">
+                      Shop<span style="color:#f97316;">Hub</span>
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Email title / subtitle -->
+              {% if email_title %}
+              <p style="margin:12px 0 0;color:#9ca3af;font-size:13px;letter-spacing:0.3px;">
+                {{ email_title }}
+              </p>
+              {% endif %}
+            </td>
+          </tr>
+
+          <!-- ════════════════════════════════════════
+               BODY  (child templates fill this block)
+               ════════════════════════════════════════ -->
+          <tr>
+            <td class="email-body" style="padding:40px 40px 32px;">
+              {% block body %}{% endblock %}
+            </td>
+          </tr>
+
+          <!-- ════════════════════════════════════════
+               FOOTER
+               ════════════════════════════════════════ -->
+          <tr>
+            <td class="email-footer"
+                style="background:#f9fafb;border-top:1px solid #e5e7eb;
+                       padding:20px 40px;text-align:center;">
+
+              <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6;">
+                © {{ current_year }} ShopHub · All rights reserved
+              </p>
+              <p style="margin:4px 0 0;color:#d1d5db;font-size:11px;">
+                Need help?
+                <a href="mailto:{{ support_email | default('support@shophub.in') }}"
+                   style="color:#f97316;text-decoration:none;">
+                  {{ support_email | default('support@shophub.in') }}
+                </a>
+              </p>
+              <p style="margin:6px 0 0;color:#e5e7eb;font-size:10px;">
+                This is an automated message. Please do not reply directly to this email.
+              </p>
+
+            </td>
+          </tr>
+
+        </table>
+        <!-- /email-card -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- /email-wrapper -->
+
+</body>
+</html>
