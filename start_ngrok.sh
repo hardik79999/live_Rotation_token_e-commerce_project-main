@@ -85,8 +85,7 @@ if not backend_port:
         if parsed.port:
             backend_port = str(parsed.port)
 
-if not backend_port:
-    env_path = os.path.join(root, '.env')
+    env_path = os.path.join(root, 'backend', '.env')
     if os.path.isfile(env_path):
         with open(env_path, 'r') as f:
             for line in f:
@@ -140,10 +139,10 @@ ports_json=$(read_ports)
 backend_port=$(printf '%s' "$ports_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["backend_port"])')
 frontend_port=$(printf '%s' "$ports_json" | python3 -c 'import json,sys; print(json.load(sys.stdin)["frontend_port"])')
 
-config_file="$PROJECT_ROOT/ngrok.yml"
+config_file="$PROJECT_ROOT/backend/ngrok.yml"
 runtime_config=""
 if [ "$backend_port" != "7899" ]; then
-  runtime_config="$PROJECT_ROOT/ngrok.runtime.yml"
+  runtime_config="$PROJECT_ROOT/backend/ngrok.runtime.yml"
   awk -v port="$backend_port" '
     $1 == "addr:" && prev == "backend:" { $2 = port }
     { print }
@@ -220,14 +219,14 @@ EOF
 echo "[INFO] Wrote frontend/.env.local with ngrok backend URL."
 
 # ── Update root .env for backend ─────────────────────────────────────────────
-if [ -f "$PROJECT_ROOT/.env" ]; then
+if [ -f "$PROJECT_ROOT/backend/.env" ]; then
   # Use a temporary file to avoid partial writes
   sed -e "s|^APP_BASE_URL=.*|APP_BASE_URL=$backend_url|" \
       -e "s|^FRONTEND_BASE_URL=.*|FRONTEND_BASE_URL=$frontend_url|" \
       -e "s|^GOOGLE_CALLBACK_BASE=.*|GOOGLE_CALLBACK_BASE=$backend_url|" \
       -e "s|^GOOGLE_FRONTEND_REDIRECT=.*|GOOGLE_FRONTEND_REDIRECT=$frontend_url|" \
-      "$PROJECT_ROOT/.env" > "$PROJECT_ROOT/.env.tmp" && mv "$PROJECT_ROOT/.env.tmp" "$PROJECT_ROOT/.env"
-  echo "[SUCCESS] Updated root .env with ngrok URLs."
+      "$PROJECT_ROOT/backend/.env" > "$PROJECT_ROOT/backend/.env.tmp" && mv "$PROJECT_ROOT/backend/.env.tmp" "$PROJECT_ROOT/backend/.env"
+  echo "[SUCCESS] Updated backend .env with ngrok URLs."
 fi
 
 echo "[SUCCESS] ngrok frontend: $frontend_url"

@@ -37,22 +37,27 @@ ShopHub is a production-grade, highly secure, and feature-rich multi-vendor e-co
 ## 📂 Repository Structure
 
 ```
-├── app.py                       # Application Entrypoint & Socket.IO Listener
-├── config.py                    # Schema-Validated App Settings
-├── seed.py                      # Database Seed Script (100+ categories & mock users)
-├── sync_search.py               # Meilisearch Data Synchronization Engine
 ├── start_ngrok.sh               # Local Tunneling & Auto-Config Script
-├── requirements.txt             # Backend Dependencies
-├── shop/                        # Backend Application Source
-│   ├── extensions.py            # Extensions Initialization (db, jwt, socketio, mail)
-│   ├── models.py                # SQLAlchemy DB Models (MySQL/SQLite compatible)
-│   ├── auth/                    # Auth Blueprint & Controller
-│   ├── admin/                   # Admin Operations & Dashboard endpoints
-│   ├── seller/                  # Seller Product & Order management
-│   ├── user/                    # Buyer Cart, Checkout, Profile, and Orders
-│   ├── chat/                    # WebSocket Real-Time Chat Engine
-│   ├── search/                  # Meilisearch Router & Client
-│   └── currency/                # Exchange Rate Manager & Caching
+├── start_frontend.sh            # Script to run frontend dev server
+├── backend/                     # Backend Modular Monolith Folder
+│   ├── app.py                   # Application Entrypoint & Socket.IO Listener
+│   ├── config.py                # Schema-Validated App Settings
+│   ├── seed.py                  # Database Seed Script (100+ categories & mock users)
+│   ├── sync_search.py           # Meilisearch Data Synchronization Engine
+│   ├── requirements.txt         # Backend Dependencies
+│   ├── start_backend.sh         # Script to run backend Flask server
+│   ├── ngrok.yml                # ngrok configuration file
+│   ├── migrations/              # Database Migrations folder
+│   └── shop/                    # Backend Application Source
+│       ├── extensions.py        # Extensions Initialization (db, jwt, socketio, mail)
+│       ├── models.py            # SQLAlchemy DB Models (MySQL/SQLite compatible)
+│       ├── auth/                # Auth Blueprint & Controller
+│       ├── admin/               # Admin Operations & Dashboard endpoints
+│       ├── seller/              # Seller Product & Order management
+│       ├── user/                # Buyer Cart, Checkout, Profile, and Orders
+│       ├── chat/                # WebSocket Real-Time Chat Engine
+│       ├── search/              # Meilisearch Router & Client
+│       └── currency/            # Exchange Rate Manager & Caching
 └── frontend/                    # Frontend React SPA Source
     ├── src/
     │   ├── api/                 # Axios clients & Interceptors (CORS, Token Refresh)
@@ -77,18 +82,23 @@ ShopHub is a production-grade, highly secure, and feature-rich multi-vendor e-co
 
 ### 🔧 1. Backend Setup
 
-1. **Set up virtual environment**:
+1. **Navigate to the backend directory**:
+   ```bash
+   cd backend
+   ```
+
+2. **Set up virtual environment**:
    ```bash
    python -m venv .venv
    source .venv/bin/activate  # On Windows: .venv\Scripts\activate
    ```
 
-2. **Install requirements**:
+3. **Install requirements**:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configure environment**:
+4. **Configure environment**:
    Copy `.env.example` to `.env` and fill in your parameters:
    ```bash
    SECRET_KEY=your_secure_random_key
@@ -96,13 +106,13 @@ ShopHub is a production-grade, highly secure, and feature-rich multi-vendor e-co
    DATABASE_URL=mysql+pymysql://user:pass@localhost/ecommerce_db
    ```
 
-4. **Database migration & Seeding**:
+5. **Database migration & Seeding**:
    Create tables and seed roles, categories, and dummy stores:
    ```bash
    python seed.py --wipe
    ```
 
-5. **Start Flask Server**:
+6. **Start Flask Server**:
    ```bash
    ./start_backend.sh
    ```

@@ -9,8 +9,9 @@ import re
 
 def create_app(config_class=Config):
     # ── Resolve the React dist folder ────────────────────────────────────
-    BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    DIST_DIR = os.path.join(BASE_DIR, 'frontend', 'dist')
+    BACKEND_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+    PROJECT_ROOT = os.path.dirname(BACKEND_DIR)
+    DIST_DIR = os.path.join(PROJECT_ROOT, 'frontend', 'dist')
 
     app = Flask(
         __name__,
@@ -23,7 +24,7 @@ def create_app(config_class=Config):
     import logging
     from logging.handlers import RotatingFileHandler
 
-    logs_dir = os.path.join(BASE_DIR, 'logs')
+    logs_dir = os.path.join(BACKEND_DIR, 'logs')
     os.makedirs(logs_dir, exist_ok=True)
 
     file_handler = RotatingFileHandler(
@@ -239,7 +240,7 @@ def create_app(config_class=Config):
         return send_from_directory(DIST_DIR, 'logo.png')
 
     # ── Serve uploaded static files (product images, profile photos) ──────
-    SHOP_STATIC_DIR = os.path.join(BASE_DIR, 'shop', 'static')
+    SHOP_STATIC_DIR = os.path.join(BACKEND_DIR, 'shop', 'static')
 
     @app.route('/static/<path:filename>')
     def serve_shop_static(filename):

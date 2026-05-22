@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-PROJECT_ROOT="$(pwd)"
+BACKEND_DIR="$(pwd)"
+PROJECT_ROOT="$(dirname "$BACKEND_DIR")"
 
 # Prefer the project virtual environment Python when available.
 PYTHON=python3
